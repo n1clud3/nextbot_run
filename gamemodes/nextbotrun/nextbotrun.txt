@@ -1,0 +1,29 @@
+"nextbotrun"
+{
+	"base"		"sandbox"
+	"title"		"Nextbot Run"
+	"maps"		"^gm_"
+	"category"	"pve"
+	"menusystem"	"1"
+	"workshopid"	"2847874664"
+
+	"settings"
+	{
+		1
+		{
+			"name"		"nbr_maxbots"
+			"text"		"Max Nextbots"
+			"help"		"the maximum number of nextbots on the map."
+			"type"		"Numeric"
+			"default"	"16"
+		}
+		2
+		{
+			"name"		"nbr_defaultweapon"
+			"text"		"Default Weapon"
+			"help"		"weapon to give players on start. write a weapon class in cvar."
+			"type"		"Text"
+			"default"	"weapon_crowbar"
+		}
+	}
+}
