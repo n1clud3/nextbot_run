@@ -12,6 +12,12 @@ function GM:PreCleanupMap()
     RemoveNextbots()
 end
 
+hook.Add("PlayerInitialSpawn", "NbrNotifyEmptyList", function()
+    if #availableNextbots == 0 then
+        PrintMessage(HUD_PRINTTALK, "Looks like the gamemode was not properly set up. If you're the owner of this server, check the data folder for nbr_nextbots.json and add bots in there.")
+    end
+end)
+
 function GM:PlayerLoadout(ply)
     ply:Give(GetConVar("nbr_defaultweapon"):GetString())
 end
