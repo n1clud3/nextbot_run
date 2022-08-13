@@ -48,3 +48,12 @@ hook.Add("PlayerSay", "NbrChatCommands", function(ply, text)
         if ply:IsAdmin() then RemoveNextbots() end
     end
 end)
+
+
+-- Login Notifications / Logout Notifications by 2400lbBear
+hook.Add( "PlayerConnect", "heysomeonejoinedtheserverdawg", function(name, ip)
+        PrintMessage(HUD_PRINTTALK, name .. " has joined the server." )
+end)
+hook.Add( "PlayerDisconnect", "heysomeonelefttheserverdawg", function(name, ip)
+        PrintMessage(HUG_PRINTTALK, name .. " has left the server." )
+end)
