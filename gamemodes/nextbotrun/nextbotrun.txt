@@ -16,6 +16,7 @@
 			"help"		"the maximum number of nextbots on the map."
 			"type"		"Numeric"
 			"default"	"16"
+			"singleplayer" "1"
 		}
 		2
 		{
