@@ -20,6 +20,15 @@
 		}
 		2
 		{
+			"name"		"nbr_botoverflow"
+			"text"		"Bot Overflow"
+			"help"		"How many more bots are needed for the number of players. (player count + this convar = bot count)"
+			"type"		"Numeric"
+			"default"	"2"
+			"singleplayer" "1"
+		}
+		3
+		{
 			"name"		"nbr_defaultweapon"
 			"text"		"Default Weapon"
 			"help"		"weapon to give players on start. write a weapon class in cvar."

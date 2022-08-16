@@ -26,7 +26,7 @@ function GM:Think()
     if #availableNextbots == 0 then return end -- if user hasn't filled out the file, don't do anything
     if #player.GetHumans() != 0 then
         if #spawnedNextbots < GetConVar("nbr_maxbots"):GetInt() then
-            if #player.GetHumans() + 2 > #spawnedNextbots then
+            if #player.GetHumans() + GetConVar("nbr_botoverflow"):GetInt() > #spawnedNextbots then
                 SpawnNextbot(player.GetHumans()[math.random(#player.GetHumans())])
                 PrintMessage(HUD_PRINTTALK, "A new nextbot has arrived...")
             end
