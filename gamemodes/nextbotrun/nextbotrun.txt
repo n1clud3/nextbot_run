@@ -2,7 +2,6 @@
 {
 	"base"		"sandbox"
 	"title"		"Nextbot Run"
-	"maps"		"^gm_"
 	"category"	"pve"
 	"menusystem"	"1"
 	"workshopid"	"2847874664"
