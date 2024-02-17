@@ -21,7 +21,9 @@ end
 
 hook.Add("PlayerInitialSpawn", "NbrNotifyEmptyList", function()
     if #NextbotList == 0 then
-        PrintMessage(HUD_PRINTTALK, "Looks like the gamemode was not properly set up. If you're the owner of this server, check the data folder for nbr_nextbots.json and add bots in there.")
+        ClientChatPrint([[Looks like the gamemode was not properly set up. 
+        If you're the owner of this server, check the data 
+        folder for nbr_nextbots.json and add bots in there.]])
     end
 end)
 
@@ -34,7 +36,7 @@ function GM:Think()
     if #player.GetHumans() != 0 then
         if (#SpawnedNextbots < GetConVar("nbr_maxbots"):GetInt()) and (#player.GetHumans() + GetConVar("nbr_botoverflow"):GetInt() > #SpawnedNextbots) then
             SpawnNextbot(player.GetHumans()[math.random(#player.GetHumans())])
-            PrintMessage(HUD_PRINTTALK, "A new nextbot has arrived...")
+            ClientChatPrint("A new enemy has appeared ...")
         end
     else
         RemoveNextbots()
@@ -44,11 +46,12 @@ end
 hook.Add("PlayerSay", "NbrChatCommands", function(ply, text)
     local command = string.Explode(" ", text)
     if command[1] == "!help" then
-        PrintMessage(HUD_PRINTTALK, "!count - how much nextbots are on the map right now.\n" .. "!suicide - use this if you're stuck.")
+        ClientChatPrint("!count - how much nextbots are on the map right now.\n" .. "!suicide - use this if you're stuck.")
     elseif command[1] == "!count" then
-        PrintMessage(HUD_PRINTTALK, "There are " .. #SpawnedNextbots .. " nextbots on the map.")
+        ClientChatPrint("There are " .. #SpawnedNextbots .. " nextbots on the map.")
     elseif command[1] == "!suicide" then
         ply:Kill()
+        return false
     elseif command[1] == "!reset" then
         if ply:IsAdmin() then RemoveNextbots() end
     end
