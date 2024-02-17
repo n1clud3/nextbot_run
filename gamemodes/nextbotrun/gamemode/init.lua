@@ -5,6 +5,8 @@ include("shared.lua")
 include("nextbots.lua")
 include("sv_chat.lua")
 
+DEFINE_BASECLASS("gamemode_base")
+
 function GM:OnReloaded()
     RemoveNextbots()
 end
@@ -23,6 +25,14 @@ end)
 
 function GM:PlayerLoadout(ply)
     ply:Give(GetConVar("nbr_defaultweapon"):GetString())
+end
+
+function GM:PlayerSpawn(ply, tr)
+    BaseClass.PlayerSpawn(self, ply, tr)
+end
+
+function GM:PlayerSetModel(ply)
+    BaseClass.PlayerSetModel(self, ply)
 end
 
 function GM:Think()
