@@ -9,10 +9,9 @@ local function findRandomSpot()
     local nav_areas = navmesh.Find(random_spawn, 16000, 16000, 16000)
 
     if #nav_areas > 0 then
-        PrintTable(nav_areas)
-        --PrintTable(nav_areas[1])
+        --PrintTable(nav_areas)
         local random_spot = nav_areas[1]:GetCenter()
-        print(random_spot)
+        --print(random_spot)
 
         return random_spot
     else
