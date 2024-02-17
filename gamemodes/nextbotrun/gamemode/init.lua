@@ -28,6 +28,8 @@ function GM:PlayerLoadout(ply)
 end
 
 function GM:PlayerSpawn(ply, tr)
+    player_manager.SetPlayerClass(ply, "player_default")
+
     BaseClass.PlayerSpawn(self, ply, tr)
 end
 
