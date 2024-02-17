@@ -1,6 +1,6 @@
 "nextbotrun"
 {
-	"base"		"sandbox"
+	"base"		"base"
 	"title"		"Nextbot Run"
 	"category"	"pve"
 	"menusystem"	"1"

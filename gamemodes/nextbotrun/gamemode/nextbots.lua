@@ -1,32 +1,46 @@
 if not file.Exists("nbr_nextbots.json", "DATA") then file.Write("nbr_nextbots.json", "[]") end
 
-availableNextbots = util.JSONToTable(file.Read("nbr_nextbots.json"))
-local nextbotSelector = math.random(#availableNextbots)
-spawnedNextbots = {}
+NextbotList = util.JSONToTable(file.Read("nbr_nextbots.json"))
+local nextbotSelector = math.random(#NextbotList)
+SpawnedNextbots = {}
+
+local function findRandomSpot()
+    local random_spawn = Vector(math.Rand(-16000, 16000), math.Rand(-16000, 16000), math.Rand(-16000, 16000))
+    local nav_areas = navmesh.Find(random_spawn, 16000, 16000, 16000)
+
+    if #nav_areas > 0 then
+        PrintTable(nav_areas)
+        --PrintTable(nav_areas[1])
+        local random_spot = nav_areas[1]:GetCenter()
+        print(random_spot)
+
+        return random_spot
+    else
+        return findRandomSpot()
+    end
+end
 
 function SpawnNextbot()
-    availableNextbots = util.JSONToTable(file.Read("nbr_nextbots.json"))
-    local nextbot = availableNextbots[nextbotSelector]
-    if nextbotSelector == #availableNextbots then
+    NextbotList = util.JSONToTable(file.Read("nbr_nextbots.json"))
+    local nextbot = NextbotList[nextbotSelector]
+    if nextbotSelector == #NextbotList then
         nextbotSelector = 1
     else
         nextbotSelector = nextbotSelector + 1
     end
-    print("Going to create "..nextbot)
+    print("Going to create " .. nextbot)
     local ent = ents.Create(nextbot)
-    local randomspawn = ents.FindByClass("info_player_start")[math.random(#ents.FindByClass("info_player_start"))]:GetPos()
-    ent:SetPos(randomspawn)
+
+    ent:SetPos(findRandomSpot())
     ent:Spawn()
-    table.insert(spawnedNextbots, ent:GetClass())
+    table.insert(SpawnedNextbots, ent)
 end
 
 function RemoveNextbots()
-    if #spawnedNextbots == 0 then return end -- if there are no nextbots, don't do anything
-    for a,bot in ipairs(spawnedNextbots) do -- iterate through table of bots 
-        for b,ent in ipairs(ents.FindByClass(bot)) do
-            ent:Remove()
-        end
+    if #SpawnedNextbots == 0 then return end -- if there are no nextbots, don't do anything
+    for a,bot in ipairs(SpawnedNextbots) do -- iterate through table of bots 
+        bot:Remove()
+        SpawnedNextbots[a] = nil -- empty nextbot
     end
-    spawnedNextbots = {} -- empty nextbot table
     print("Despawned all nextbots.")
 end
