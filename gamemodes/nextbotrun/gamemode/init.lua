@@ -3,13 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 include("nextbots.lua")
-
-util.AddNetworkString("client_chat_print")
-function ClientChatPrint(message)
-    net.Start("client_chat_print", true)
-    net.WriteString(message)
-    net.Broadcast()
-end
+include("sv_chat.lua")
 
 function GM:OnReloaded()
     RemoveNextbots()
@@ -21,7 +15,7 @@ end
 
 hook.Add("PlayerInitialSpawn", "NbrNotifyEmptyList", function()
     if #NextbotList == 0 then
-        ClientChatPrint([[Looks like the gamemode was not properly set up. 
+        ClientChatBroadcast([[Looks like the gamemode was not properly set up. 
         If you're the owner of this server, check the data 
         folder for nbr_nextbots.json and add bots in there.]])
     end
@@ -35,8 +29,9 @@ function GM:Think()
     if #NextbotList == 0 then return end -- if user hasn't filled out the file, don't do anything
     if #player.GetHumans() != 0 then
         if (#SpawnedNextbots < GetConVar("nbr_maxbots"):GetInt()) and (#player.GetHumans() + GetConVar("nbr_botoverflow"):GetInt() > #SpawnedNextbots) then
-            SpawnNextbot(player.GetHumans()[math.random(#player.GetHumans())])
-            ClientChatPrint("A new enemy has appeared ...")
+            local bot_id = SpawnNextbot(player.GetHumans()[math.random(#player.GetHumans())])
+            ClientChatBroadcast("A new enemy " .. Entity(bot_id):GetClass() .. " has appeared ...", NBR_COLOR_SERVERMSG)
+            ClientAdminChatBroadcast("Entity ID: " .. bot_id, NBR_COLOR_SERVERMSG)
         end
     else
         RemoveNextbots()
@@ -46,13 +41,47 @@ end
 hook.Add("PlayerSay", "NbrChatCommands", function(ply, text)
     local command = string.Explode(" ", text)
     if command[1] == "!help" then
-        ClientChatPrint("!count - how much nextbots are on the map right now.\n" .. "!suicide - use this if you're stuck.")
+        ClientChatPrint(ply, "[ NEXTBOT RUN HELP ]", Color(255, 80, 40))
+        ClientChatPrint(ply, "!count - how much nextbots are on the map right now.", NBR_COLOR_CLIENTGRAY)
+        ClientChatPrint(ply, "!suicide - unalive yourself. Use if you're stuck.", NBR_COLOR_CLIENTGRAY)
+        if ply:IsAdmin() then
+            ClientChatPrint(ply, "[ HELP for admins ]", Color(255, 80, 40))
+            ClientChatPrint(ply, "!reset - remove all nextbots currently roaming the map.", NBR_COLOR_CLIENTGRAY)
+            ClientChatPrint(ply, "!removebot [ent_id] - remove bot with specified entity ID. Useful for removing \"Ignoring unreasonable position\" bots.", NBR_COLOR_CLIENTGRAY)
+        end
+        return false
     elseif command[1] == "!count" then
-        ClientChatPrint("There are " .. #SpawnedNextbots .. " nextbots on the map.")
+        ClientChatPrint(ply, "There are " .. #SpawnedNextbots .. " nextbots on the map.")
+        return false
     elseif command[1] == "!suicide" then
         ply:Kill()
+        ClientChatPrint("You we're too weak for this place ...")
         return false
     elseif command[1] == "!reset" then
         if ply:IsAdmin() then RemoveNextbots() end
+        ClientChatBroadcast("Nextbots were removed.", NBR_COLOR_SERVERMSG)
+        return false
+    elseif command[1] == "!removebot" then
+        if ply:IsAdmin() then
+            local ent_id = tonumber(command[2])
+            if ent_id == nil then
+                ClientChatPrint(ply, "[!removebot] Incorrect entity ID.", Color(255, 40, 40))
+                return false
+            end
+            local ent = Entity(ent_id)
+            if ent:IsPlayer() then
+                ClientChatPrint(ply, "[!removebot] Cannot remove a player!", Color(255, 40, 40))
+                return false
+            end
+            ent:Remove()
+            for a, bot in ipairs(SpawnedNextbots) do -- Remove entity from the list
+                if bot == ent_id then
+                    SpawnedNextbots[a] = nil
+                end
+            end
+            ClientChatPrint(ply, "[!removebot] Bot was removed.", NBR_COLOR_CLIENTGRAY)
+        end
+
+        return false
     end
 end)

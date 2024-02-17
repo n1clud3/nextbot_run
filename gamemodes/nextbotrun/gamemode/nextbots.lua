@@ -32,13 +32,18 @@ function SpawnNextbot()
 
     ent:SetPos(findRandomSpot())
     ent:Spawn()
-    table.insert(SpawnedNextbots, ent)
+
+    local ent_id = ent:EntIndex()
+
+    table.insert(SpawnedNextbots, ent_id)
+
+    return ent_id
 end
 
 function RemoveNextbots()
     if #SpawnedNextbots == 0 then return end -- if there are no nextbots, don't do anything
-    for a,bot in ipairs(SpawnedNextbots) do -- iterate through table of bots 
-        bot:Remove()
+    for a,bot in ipairs(SpawnedNextbots) do -- iterate through table of bots
+        Entity(bot):Remove()
         SpawnedNextbots[a] = nil -- empty nextbot
     end
     print("Despawned all nextbots.")

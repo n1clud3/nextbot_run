@@ -1,5 +1,10 @@
 include("shared.lua")
 
+net.Receive("client_chat_broadcast", function(len, ply)
+    local msg = net.ReadTable(true)
+    chat.AddText(msg[2], msg[1])
+end)
 net.Receive("client_chat_print", function(len, ply)
-    chat.AddText(net.ReadString())
+    local msg = net.ReadTable(true)
+    chat.AddText(msg[2], msg[1])
 end)
